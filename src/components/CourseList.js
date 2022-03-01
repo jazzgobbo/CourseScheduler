@@ -4,8 +4,6 @@ from '/Users/jazzgobbo/Desktop/scheduler/src/utilities/times.js';
 import Course from './Course.js';
 
 
-
-
 const TermButton = ({term, setTerm, checked}) => (
   <>
     <input type="radio" id={term} className="btn-check" checked={checked} autoComplete="off"
@@ -27,10 +25,18 @@ const TermSelector = ({term, setTerm}) => (
 );
 
 
+const scheduleChanged = (selected, courses) => (
+    selected.some(course => course !== courses[course.id])
+);
+  
 const CourseList = ({ courses }) => {
     const [term, setTerm] = useState('Fall');
-    //trackable state variable for list of currently selected courses
     const [selected, setSelected] = useState([]);
+  
+    if (scheduleChanged(selected, courses)) {
+      setSelected([])
+    };
+    
     const termCourses = Object.values(courses).filter(course => term === getCourseTerm(course));
     
     return (
@@ -46,6 +52,6 @@ const CourseList = ({ courses }) => {
         </div>
       </>
     );
-  };
+};
 
 export default CourseList;

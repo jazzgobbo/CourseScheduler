@@ -21,6 +21,9 @@ const firebaseConfig = {
   measurementId: "G-D57CH86J9K"
 };
 
+export const setData = (path, value) => {
+    set(ref(database, path), value)
+};
 
 
 export const useData = (path, transform) => {
@@ -49,7 +52,11 @@ export const useData = (path, transform) => {
     }, [path, transform]);
   
     return [data, loading, error];
-  };
+};
+
+
+
+
 
 // Initialize Firebase
 const firebase = initializeApp(firebaseConfig);
@@ -59,3 +66,4 @@ const auth = getAuth(firebase);
 onAuthStateChanged(auth, user => {
   // Check for user status
 });
+
