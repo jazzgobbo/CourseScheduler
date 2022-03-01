@@ -1,7 +1,7 @@
 import { hasConflict, courseConflict, getCourseTerm, terms} 
 from '/Users/jazzgobbo/Desktop/scheduler/src/utilities/times.js';
 import timeParts from '/Users/jazzgobbo/Desktop/scheduler/src/App.js';
-import {setData, useData} from '/Users/jazzgobbo/Desktop/scheduler/src/utilities/firebase.js';
+import {setData, useData, useUserState} from '/Users/jazzgobbo/Desktop/scheduler/src/utilities/firebase.js';
 
 const toggle = (x, lst) => (
     lst.includes(x) ? lst.filter(y => y !== x) : [x, ...lst]
@@ -29,10 +29,12 @@ const reschedule = async (course, meets) => {
       }
     }
 };
-  
-export const Course = ({ course, selected, setSelected }) => {
+
+//double clicking course only changes meeting time if you are logged in
+const Course = ({ course, selected, setSelected }) => {
     const isSelected = selected.includes(course);
     const isDisabled = !isSelected && hasConflict(course, selected);
+    const [user] = useUserState();
     const style = {
       backgroundColor: isDisabled? 'lightgrey' : isSelected ? 'lightblue' : 'white'
     };
@@ -40,8 +42,8 @@ export const Course = ({ course, selected, setSelected }) => {
     return (
       <div className="card m-1 p-2" 
           style={style}
-          onClick={isDisabled ? null : () =>  setSelected(toggle(course, selected))}
-          onDoubleClick={() => reschedule(course, getCourseMeetingData(course))}>
+          onClick={(isDisabled) ? null : () => setSelected(toggle(course, selected))}
+          onDoubleClick={!user ? null : () => reschedule(course, getCourseMeetingData(course))}>
         <div className="card-body">
           <div className="card-title">{ getCourseTerm(course) } CS { getCourseNumber(course) }</div>
           <div className="card-text">{ course.title }</div>

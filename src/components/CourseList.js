@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { hasConflict, courseConflict, getCourseTerm, terms} 
 from '/Users/jazzgobbo/Desktop/scheduler/src/utilities/times.js';
 import Course from './Course.js';
+import {useUserState, signInWithGoogle, setData, useData, signOut} from '/Users/jazzgobbo/Desktop/scheduler/src/utilities/firebase.js';
 
 
 const TermButton = ({term, setTerm, checked}) => (
@@ -14,16 +15,36 @@ const TermButton = ({term, setTerm, checked}) => (
   </>
 );
 
-const TermSelector = ({term, setTerm}) => (
-  <div className="btn-group">
-  { 
-    Object.values(terms).map(value => (
-      <TermButton key={value} term={value} setTerm={setTerm} checked={value === term} />
-    ))
-  }
-  </div>
+//produces pop up fro google authentication 
+const SignInButton = () => (
+    <button className="btn btn-secondary btn-sm"
+        onClick={() => signInWithGoogle()}>
+      Sign In
+    </button>
 );
 
+const SignOutButton = () => (
+    <button className="btn btn-secondary btn-sm"
+        onClick={() => signOut()}>
+      Sign Out
+    </button>
+);
+  
+const TermSelector = ({term, setTerm}) => {
+    const [user] = useUserState();
+    return (
+      <div className="btn-toolbar justify-content-between">
+        <div className="btn-group">
+        { 
+          Object.values(terms).map(
+            value => <TermButton key={value} term={value} setTerm={setTerm} checked={value === term} />
+          )
+        }
+        </div>
+        { user ? <SignOutButton /> : <SignInButton /> }
+      </div>
+    );
+};
 
 const scheduleChanged = (selected, courses) => (
     selected.some(course => course !== courses[course.id])
