@@ -1,7 +1,7 @@
 import { hasConflict, courseConflict, getCourseTerm, terms} 
-from '/Users/jazzgobbo/Desktop/scheduler/src/utilities/times.js';
-import timeParts from '/Users/jazzgobbo/Desktop/scheduler/src/App.js';
-import {setData, useData, useUserState} from '/Users/jazzgobbo/Desktop/scheduler/src/utilities/firebase.js';
+from '../utilities/times';
+import timeParts from '../App.js';
+import {setData, useData, useUserState} from '../utilities/firebase.js';
 
 const toggle = (x, lst) => (
     lst.includes(x) ? lst.filter(y => y !== x) : [x, ...lst]

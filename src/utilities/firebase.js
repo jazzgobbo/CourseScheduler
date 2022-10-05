@@ -1,8 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDatabase, onValue, ref, set } from 'firebase/database';
-import React, { useState, useEffect } from 'react';
+import { getDatabase, onValue, ref, set, update } from 'firebase/database';
+import React, { useCallback, useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, onIdTokenChanged, signInWithPopup, signOut } from 'firebase/auth';
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -45,7 +45,7 @@ export const useUserState = () => {
     return [user];
 };
 
-export const useData = (path, transform) => {
+/*export const useData = (path, transform) => {
     //Display data
     const [data, setData] = useState();
     //No data is available yet
@@ -72,7 +72,7 @@ export const useData = (path, transform) => {
   
     return [data, loading, error];
 };
-
+*/
 
 
 
@@ -80,6 +80,39 @@ export const useData = (path, transform) => {
 // Initialize Firebase
 const firebase = initializeApp(firebaseConfig);
 const database = getDatabase(firebase);
+
+export const useDbData = (path) => {
+  const [data, setData] = useState();
+  const [error, setError] = useState(null);
+
+  useEffect(() => (
+    onValue(ref(database, path), (snapshot) => {
+     setData( snapshot.val() );
+    }, (error) => {
+      setError(error);
+    })
+  ), [ path ]);
+
+  return [ data, error ];
+};
+
+const makeResult = (error) => {
+  const timestamp = Date.now();
+  const message = error?.message || `Updated: ${new Date(timestamp).toLocaleString()}`;
+  return { timestamp, error, message };
+};
+
+export const useDbUpdate = (path) => {
+  const [result, setResult] = useState();
+  const updateData = useCallback((value) => {
+    update(ref(database, path), value)
+    .then(() => setResult(makeResult()))
+    .catch((error) => setResult(makeResult(error)))
+  }, [database, path]);
+
+  return [updateData, result];
+};
+
 const analytics = getAnalytics(firebase);
 const auth = getAuth(firebase);
 onAuthStateChanged(auth, user => {

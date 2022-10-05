@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { hasConflict, courseConflict, getCourseTerm, terms} 
-from '/Users/jazzgobbo/Desktop/scheduler/src/utilities/times.js';
+from '../utilities/times.js';
 import Course from './Course.js';
-import {useUserState, signInWithGoogle, setData, useData, signOut} from '/Users/jazzgobbo/Desktop/scheduler/src/utilities/firebase.js';
+import {useUserState, signInWithGoogle, setData, useData, signOut} from '../utilities/firebase.js';
 
 
 const TermButton = ({term, setTerm, checked}) => (
