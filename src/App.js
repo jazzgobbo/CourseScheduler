@@ -2,8 +2,8 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 //import { hasConflict, courseConflict, getCourseTerm, terms} from './utilities/times.js';
 import CourseList from './components/CourseList';
-import { useData, useDbData } from './utilities/firebase.js';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useDbData } from './utilities/firebase.js';
+
 
 const meetsPat = /^ *((?:M|Tu|W|Th|F)+) +(\d\d?):(\d\d) *[ -] *(\d\d?):(\d\d) *$/;
 
@@ -38,10 +38,14 @@ const Banner = ({ title }) => (
 
 
 
+
+
 const App = () => {
-  const [schedule, error] = useDbData('/'); 
+  const [schedule, error] = useDbData('/');
+ 
   
-  if (error) return <h1>{error}</h1>;
+  
+  if (error) return <h1>Error loading user data: {`${error}`}</h1>;
   if (!schedule) return <h1>Loading the schedule...</h1>
 
   return (
