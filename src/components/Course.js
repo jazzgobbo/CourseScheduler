@@ -1,7 +1,7 @@
 import { hasConflict, courseConflict, getCourseTerm, terms} 
 from '../utilities/times';
-import timeParts from '../App.js';
 import {setData, useData, useUserState} from '../utilities/firebase.js';
+
 
 const toggle = (x, lst) => (
     lst.includes(x) ? lst.filter(y => y !== x) : [x, ...lst]
@@ -14,16 +14,22 @@ const getCourseNumber = course => (
 //uses timeParts so we should import from App.js
 const getCourseMeetingData = course => {
     const meets = prompt('Enter meeting data: MTuWThF hh:mm-hh:mm', course.meets);
-    const valid = !meets || timeParts(meets).days;
-    if (valid) return meets;
-    alert('Invalid meeting data');
-    return null;
+    console.log(meets)
+    const valid = /[M|Tu|W|Th|F]+ [0-1][0-9]:[0-9][0-9]-[0-1][0-9]:[0-9][0-9]/gm.test(meets);
+    console.log(valid)
+    //const valid = !meets|| timeParts(meets).days;
+    if (valid) {
+      return meets;
+    } else {
+        alert('Invalid meeting data');
+        return null;
+    }
 };
 
 const reschedule = async (course, meets) => {
     if (meets && window.confirm(`Change ${course.id} to ${meets}?`)) {
       try {
-        await setData(`/courses/${course.id}/meets`, meets);
+        setData(`/courses/${course.id}/meets`, meets);
       } catch (error) {
         alert(error);
       }

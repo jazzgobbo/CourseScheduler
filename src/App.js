@@ -1,8 +1,12 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 //import { hasConflict, courseConflict, getCourseTerm, terms} from './utilities/times.js';
-import CourseList from './components/CourseList';
 import { useDbData } from './utilities/firebase.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Dispatcher from "./components/Dispatcher";
+import './App.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 
 
 const meetsPat = /^ *((?:M|Tu|W|Th|F)+) +(\d\d?):(\d\d) *[ -] *(\d\d?):(\d\d) *$/;
@@ -36,25 +40,30 @@ const Banner = ({ title }) => (
   <h1>{ title }</h1>
 );
 
-
-
-
-
-const App = () => {
-  const [schedule, error] = useDbData('/');
- 
-  
-  
+const Main = () => {
+  const [data, error] = useDbData('/');
   if (error) return <h1>Error loading user data: {`${error}`}</h1>;
-  if (!schedule) return <h1>Loading the schedule...</h1>
+  if (!data) return <h1>No user data found</h1>;
 
+  console.log(data)
   return (
     <div className="container">
-      <Banner title={ schedule.title } />
-      <CourseList courses={ schedule.courses } />
+      <Banner title={ data.title } />
+      <Dispatcher courses={data.courses}/>
     </div>
   );
-};
+}
+
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <div className="container">
+      <Main />
+    </div>
+  </QueryClientProvider>
+);
 
 
 

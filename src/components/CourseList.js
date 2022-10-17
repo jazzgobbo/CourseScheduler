@@ -5,11 +5,12 @@ import Course from './Course.js';
 import {useUserState, signInWithGoogle, setData, useData, signOut} from '../utilities/firebase.js';
 
 
+
 const TermButton = ({term, setTerm, checked}) => (
   <>
     <input type="radio" id={term} className="btn-check" checked={checked} autoComplete="off"
       onChange={() => setTerm(term)} />
-    <label class="btn btn-success m-1 p-2" htmlFor={term}>
+    <label className="btn btn-success m-1 p-2" htmlFor={term}>
     { term }
     </label>
   </>
@@ -53,6 +54,8 @@ const scheduleChanged = (selected, courses) => (
 const CourseList = ({ courses }) => {
     const [term, setTerm] = useState('Fall');
     const [selected, setSelected] = useState([]);
+
+    
   
     if (scheduleChanged(selected, courses)) {
       setSelected([])
@@ -76,3 +79,4 @@ const CourseList = ({ courses }) => {
 };
 
 export default CourseList;
+
